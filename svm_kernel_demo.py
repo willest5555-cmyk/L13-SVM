@@ -1,7 +1,26 @@
+import os
+import json
 import numpy as np
 from manim import *
 from sklearn.svm import SVC
 from sklearn.datasets import make_circles
+
+# Load dynamic configuration from environment, or use defaults
+config_str = os.environ.get("SVM_MANIM_CONFIG", None)
+if config_str:
+    user_cfg = json.loads(config_str)
+else:
+    user_cfg = {
+        "n_samples": 120,
+        "factor": 0.35,
+        "noise": 0.05,
+        "random_state": 7,
+        "kernel": "rbf",
+        "gamma": 3.0,
+        "C": 10.0,
+        "degree": 3,
+        "coef0": 0.0
+    }
 
 # Define constants for colors and ranges
 CLASS_0_COLOR = BLUE      # Inner circle
@@ -43,7 +62,12 @@ class SVMKernelFullDemo(ThreeDScene):
         z_label = axes.get_z_axis_label("z")
         
         # Generate Concentric Circle Data
-        X, y = make_circles(n_samples=120, factor=0.35, noise=0.05, random_state=7)
+        X, y = make_circles(
+            n_samples=user_cfg["n_samples"], 
+            factor=user_cfg["factor"], 
+            noise=user_cfg["noise"], 
+            random_state=user_cfg["random_state"]
+        )
         
         # Generate 2D Dots
         dots = VGroup()
@@ -98,12 +122,14 @@ class SVMKernelFullDemo(ThreeDScene):
         self.add_fixed_in_frame_mobjects(title, desc, formula)
         
         # Animate Camera transition to 3D Perspective
-        self.play(
-            self.camera.animate.set_euler_coords(phi=65 * DEGREES, theta=-45 * DEGREES),
-            Write(z_label),
-            FadeIn(title),
-            FadeIn(desc),
-            Write(formula),
+        self.move_camera(
+            phi=65 * DEGREES, theta=-45 * DEGREES,
+            added_anims=[
+                Write(z_label),
+                FadeIn(title),
+                FadeIn(desc),
+                Write(formula)
+            ],
             run_time=2.0
         )
         self.wait(1.0)
@@ -122,7 +148,7 @@ class SVMKernelFullDemo(ThreeDScene):
             u_range=[X_MIN, X_MAX],
             v_range=[Y_MIN, Y_MAX],
             resolution=(20, 20),
-            colors=[GRAY, LIGHT_GRAY]
+            checkerboard_colors=[GRAY, LIGHT_GRAY]
         )
         lifting_surface.set_style(fill_opacity=0.25, stroke_color=GRAY, stroke_width=0.3)
         
@@ -138,7 +164,7 @@ class SVMKernelFullDemo(ThreeDScene):
             u_range=[X_MIN, X_MAX],
             v_range=[Y_MIN, Y_MAX],
             resolution=(2, 2),
-            colors=[HYPERPLANE_COLOR, HYPERPLANE_COLOR]
+            checkerboard_colors=[HYPERPLANE_COLOR, HYPERPLANE_COLOR]
         )
         hyperplane.set_style(fill_opacity=0.35, stroke_color=HYPERPLANE_COLOR, stroke_width=1.0)
         
@@ -171,7 +197,8 @@ class SVMKernelFullDemo(ThreeDScene):
         # ----------------------------------------------------------------------
         
         # Setup Phase 3 Title and Text
-        title = Text("Phase 3: Real RBF SVM Decision Surface", font_size=24, color=WHITE)
+        kernel_name = user_cfg["kernel"].upper()
+        title = Text(f"Phase 3: Real {kernel_name} SVM Decision Surface", font_size=24, color=WHITE)
         title.to_edge(UP)
         desc = Text("Visualizing the SVM decision function f(x, y) as a 3D landscape.", font_size=16, color=LIGHT_GRAY)
         desc.next_to(title, DOWN)
@@ -187,8 +214,14 @@ class SVMKernelFullDemo(ThreeDScene):
         )
         self.wait(1.0)
         
-        # Train a real RBF SVM
-        clf = SVC(kernel="rbf", gamma=3.0, C=10)
+        # Train a real SVM using user configuration
+        clf = SVC(
+            kernel=user_cfg["kernel"], 
+            gamma=user_cfg["gamma"], 
+            C=user_cfg["C"],
+            degree=user_cfg["degree"],
+            coef0=user_cfg["coef0"]
+        )
         clf.fit(X, y)
         
         # Build decision surface z = f(x, y)
@@ -202,7 +235,7 @@ class SVMKernelFullDemo(ThreeDScene):
             u_range=[X_MIN, X_MAX],
             v_range=[Y_MIN, Y_MAX],
             resolution=(30, 30),
-            colors=[BLUE_D, RED_D]  # Checkerboard representing the binary classification values
+            checkerboard_colors=[BLUE_D, RED_D]  # Checkerboard representing the binary classification values
         )
         decision_surface.set_style(fill_opacity=0.65, stroke_color=WHITE, stroke_width=0.3)
         
@@ -212,7 +245,7 @@ class SVMKernelFullDemo(ThreeDScene):
             u_range=[X_MIN, X_MAX],
             v_range=[Y_MIN, Y_MAX],
             resolution=(2, 2),
-            colors=[YELLOW, YELLOW]
+            checkerboard_colors=[YELLOW, YELLOW]
         )
         zero_plane.set_style(fill_opacity=0.2, stroke_color=YELLOW, stroke_width=0.0)
         

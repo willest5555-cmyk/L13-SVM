@@ -318,6 +318,47 @@ with tab4:
     st.markdown("### 🎬 Manim Video Animation Player")
     st.write("This tab serves the high-quality mathematical animation rendered by Manim Community Edition.")
     
+    st.markdown("#### ⚡ Generate Custom Animation")
+    st.write("You can dynamically render a new Manim video based on your current sidebar settings! This uses your local CPU.")
+    
+    if st.button("🎬 Render Custom Animation (480p15 Fast Preview)", type="primary"):
+        import subprocess
+        import json
+        import os
+        
+        config_dict = {
+            "n_samples": n_samples,
+            "factor": inner_factor,
+            "noise": noise_level,
+            "random_state": random_state,
+            "kernel": kernel_type,
+            "gamma": gamma_val,
+            "C": c_val,
+            "degree": degree_val,
+            "coef0": coef0_val
+        }
+        
+        env = os.environ.copy()
+        
+        # Ensure MiKTeX is in the PATH for the subprocess if installed locally
+        miktex_path = r"C:\Users\ShenHsuanwu\AppData\Local\Programs\MiKTeX\miktex\bin\x64"
+        if os.path.exists(miktex_path) and miktex_path not in env.get("PATH", ""):
+            env["PATH"] = miktex_path + os.pathsep + env.get("PATH", "")
+            
+        env["SVM_MANIM_CONFIG"] = json.dumps(config_dict)
+        
+        with st.spinner("Rendering Manim Video... This usually takes 10-30 seconds depending on your CPU."):
+            import sys
+            render_cmd = [sys.executable, "-m", "manim", "-pql", "svm_kernel_demo.py", "SVMKernelFullDemo"]
+            try:
+                subprocess.run(render_cmd, env=env, check=True, capture_output=True, text=True)
+                st.success("Render complete! The new video is loaded below.")
+            except subprocess.CalledProcessError as e:
+                st.error("Render failed!")
+                st.code(e.stderr)
+
+    st.markdown("---")
+    
     # Check for rendered videos in common manim output folders
     video_paths = [
         Path("media/videos/svm_kernel_demo/1080p60/SVMKernelFullDemo.mp4"),
