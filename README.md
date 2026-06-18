@@ -114,6 +114,8 @@ This project was built with a dual-track strategy to provide both high-quality e
 - **Data & Mapping**: Chose `sklearn.datasets.make_circles` to generate non-linearly separable data. Used an explicit geometric lifting function $z = x^2 + y^2$ to visually demonstrate how data is mapped to higher dimensions.
 - **Interactive 3D Rendering**: Selected `Plotly` combined with `Streamlit` to render the actual SVM decision landscape $z = f(x, y)$ using `numpy.meshgrid`, allowing users to dynamically visualize the mathematical surface of the fitted model.
 - **Automated Verification**: The Streamlit interface, including 3D plots and UI widgets, was successfully verified using an AI browser subagent to ensure seamless interactivity across all kernel types (RBF, Poly, Linear).
+- **Interactive Manim Video Generation**: Bridged Streamlit with Manim by executing a parameterized subprocess. Users can adjust SVM hyperparameters in the web interface and trigger an on-the-fly rendering of a completely custom 3D educational animation.
+- **LaTeX Math Rendering**: Integrated full LaTeX support (`MathTex`) to render beautiful, professional-grade mathematical formulas in the animations. Set up `MiKTeX` locally and `texlive` dependencies in Streamlit Cloud to ensure the math rendering works seamlessly in both environments.
 - **Cloud Deployment**: Successfully deployed to Streamlit Community Cloud, handling underlying system dependencies (e.g., `ffmpeg`, `libcairo2-dev`) and pure ASCII encoding requirements for stable `apt-get` installation.
 
 *For a detailed breakdown of all actions and choices, please refer to the full log in [`./resources/log.md`](./resources/log.md).*
