@@ -1,0 +1,4 @@
+manim
+numpy
+scikit-learn
+plotly
