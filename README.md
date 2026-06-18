@@ -1,6 +1,9 @@
 # SVM Kernel Trick 3D Manim Animation Demo
 
-This project provides a complete Manim Community Edition animation demonstrating the mathematical concept of the **Support Vector Machine (SVM) Kernel Trick**.
+🔗 **Live Web App**: [https://l13-svm-nrhrc5zu6cnhth333cd2f8.streamlit.app/](https://l13-svm-nrhrc5zu6cnhth333cd2f8.streamlit.app/)
+🐙 **GitHub Repository**: [https://github.com/willest5555-cmyk/L13-SVM](https://github.com/willest5555-cmyk/L13-SVM)
+
+This project provides a complete Manim Community Edition animation demonstrating the mathematical concept of the **Support Vector Machine (SVM) Kernel Trick**, alongside an interactive 3D web application.
 
 It features an educational visualization in three distinct phases:
 1. **Phase 1: 2D Non-linear Separability** — Demonstrating why concentric circle data cannot be separated by any single straight line.
@@ -111,5 +114,6 @@ This project was built with a dual-track strategy to provide both high-quality e
 - **Data & Mapping**: Chose `sklearn.datasets.make_circles` to generate non-linearly separable data. Used an explicit geometric lifting function $z = x^2 + y^2$ to visually demonstrate how data is mapped to higher dimensions.
 - **Interactive 3D Rendering**: Selected `Plotly` combined with `Streamlit` to render the actual SVM decision landscape $z = f(x, y)$ using `numpy.meshgrid`, allowing users to dynamically visualize the mathematical surface of the fitted model.
 - **Automated Verification**: The Streamlit interface, including 3D plots and UI widgets, was successfully verified using an AI browser subagent to ensure seamless interactivity across all kernel types (RBF, Poly, Linear).
+- **Cloud Deployment**: Successfully deployed to Streamlit Community Cloud, handling underlying system dependencies (e.g., `ffmpeg`, `libcairo2-dev`) and pure ASCII encoding requirements for stable `apt-get` installation.
 
 *For a detailed breakdown of all actions and choices, please refer to the full log in [`./resources/log.md`](./resources/log.md).*
